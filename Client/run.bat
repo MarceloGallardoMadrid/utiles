@@ -1,0 +1,1 @@
+"%JAVA_HOME%/bin/java" -classpath "out;ipaddress-5.3.3.jar"  com.ClientMain

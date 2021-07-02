@@ -1,0 +1,1 @@
+"%JAVA_HOME%/bin/javac" -d out -cp src src/com/ServerMain.java
