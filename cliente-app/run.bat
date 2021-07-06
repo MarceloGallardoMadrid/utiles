@@ -1,0 +1,1 @@
+"%JAVA_HOME%/bin/java" -classpath "target/cliente-app-1.0-SNAPSHOT.jar"  edu.nahuel.App

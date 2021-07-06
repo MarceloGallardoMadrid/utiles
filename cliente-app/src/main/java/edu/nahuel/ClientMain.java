@@ -1,4 +1,4 @@
-package com;
+package edu.nahuel;
 //"%JAVA_HOME%/bin/javac" -d out -cp src src/com/ClientMain.java
 //"%JAVA_HOME%/bin/java" -cp out com.ClientMain
 import java.io.*;
