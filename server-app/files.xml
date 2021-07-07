@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Descarga>
+	<Files>
+	<archivos>
+		<archivo>Files\t1.txt</archivo>
+		<archivo>Files\dir1\t1.txt</archivo>
+		<archivo>Files\dir1\t2.txt</archivo>
+		<archivo>Files\dir1\dir2\t1.txt</archivo>
+	</archivos>
+	<directorios>
+		<directorio>
+			<nombre>Files</nombre><archivos/><directorios/>
+		</directorio>
+		<directorio>
+			<nombre>Files\dir1</nombre><archivos/><directorios/></directorio>
+		<directorio>
+			<nombre>Files\dir1\dir2</nombre><archivos/><directorios/>
+		</directorio>
+	</directorios>
+	</Files>
+</Descarga>

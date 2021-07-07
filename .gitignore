@@ -1,5 +1,6 @@
 server-app/target/
 cliente-app/target/
+server-app/Files/
+cliente-app/Files/
 Notas.txt
-diagrama.bmp
-'diagrama 2'.bmp
+*.bmp

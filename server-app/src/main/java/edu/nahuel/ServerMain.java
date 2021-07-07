@@ -15,6 +15,9 @@ import java.util.ArrayList;
 public class ServerMain
 {
 	static String FilesPath="Files/";
+	static String FilesPathTree="Files";
+	static String XMLPath="xml\\files.xml";
+	
 	public static void main(String[] args) 
 	{
 		
@@ -22,6 +25,20 @@ public class ServerMain
 		//enviarArchivoDeep();
 		uploadFiles();
 		
+	}
+	public static void imprimirArbolFile(){
+		GestorDirectorio gd = new GestorDirectorio();
+		gd.imprimirArbolFile(FilesPathTree,"xml");
+		
+	}
+	public static void crearArbolLinear(){
+		GestorDirectorio gd = new GestorDirectorio();
+		gd.crearArbolLinear(FilesPathTree);
+	}
+	public static void leerArbol(){
+		GestorDirectorio gd = new GestorDirectorio();
+		gd.leerArbol();
+
 	}
 	public static void mostrarIP(){
 		        // Aqui obtenemos la ip local de la maquina
@@ -77,7 +94,7 @@ public class ServerMain
 	private static byte[] getFileBytes(String name){
 	byte[] fileC=null;	
 			try{
-				File f =new File(FilesPath+name);
+				File f =new File(name);
 				fileC=Files.readAllBytes(f.toPath());
 		}
 		catch(IOException ioe){
@@ -85,8 +102,7 @@ public class ServerMain
 		}
 		
 		return fileC;
-	}
-	
+	}	
 	public BufferedReader getReader(String name){
 		BufferedReader in =null;
 		try{
@@ -99,12 +115,7 @@ public class ServerMain
 		return in;
 	}
 	public static void uploadFiles(){
-		ArrayList<String> filesName=getFilesNames();
-		//El chiste es voy creando paquetitos de 1024 para enviarselo
-		// byte[] fileContent=getFileBytes(filesName.get(0));
-		// for(byte b:fileContent){
-			// System.out.println(b);
-		// }
+		imprimirArbolFile();
 		System.out.println("Soy un servidor");
 		ServerSocket servidor=null;
 		Socket sc=null;
@@ -130,37 +141,20 @@ public class ServerMain
 				//Como voy a usar los numeros para elegir los archivos, es un par id, archivo
 				//un mensaje que tenga 1,nombre
 				//Le digo que existen estos archivos y le pregunto si lo desea descargar a todos
-				int n=1;
-				String listName="";
-				ArrayList<Tupla> tuplas= new  ArrayList<Tupla>();
-				for(String name:filesName){
-					Tupla t= new Tupla(n,name);
-					tuplas.add(t);
-					listName+=t.toString()+"\n";
-					
-					n++;
-				}
-				out.writeUTF(listName);
-				//Mostre los archivos
-				out.writeUTF("Seleccione con el numero al archivo");
-				//Leo su opcion
-				String op=in.readUTF();
-				String fname="not found";
-				System.out.println(op);
-				for(Tupla t:tuplas){
-					if(t.esId(op)){
-						fname=t.getName();
-					}
-				}
-				//le digo el nombre del archivo
-				System.out.println(fname);
-				out.writeUTF(fname);
+
 				//le digo que se lo mando
 				out.writeUTF("Enviando bytes");
-				
+				String fname=XMLPath;
 				enviarArchivo(fname,out);
 				//no necesita mas datas creo
 				out.writeUTF("Archivo enviado");
+				//Hasta aca el xml
+				mensaje=in.readUTF();
+				int size= Integer.parseInt(mensaje);
+				System.out.println("Necesita "+mensaje+" archivos");
+				//El numero de archivos
+				enviarArchivos(out,in);
+				//Archivos envias
 				sc.close();
 				System.out.println("Cliente desconectado");
 			}
@@ -230,7 +224,7 @@ public class ServerMain
 				out.writeUTF("Enviando bytes");
 				
 				//Archivo's bytes
-				byte[] fileContent=getFileBytes(fname);
+				byte[] fileContent=getFileBytes(FilesPath+fname);
 				int ln=fileContent.length;
 				out.writeUTF(ln+"");
 				System.out.println(fileContent.length+" bytes sending");
@@ -378,7 +372,7 @@ public class ServerMain
 				System.out.println(mensaje);
 				out.writeUTF("Hola desde servidor");
 				//Hasta aca los hola
-				String fname="dir\\t1.txt";
+				String fname="Files\\dir\\t1.txt";
 				//le digo el nombre del archivo
 				System.out.println(fname);
 				out.writeUTF(fname);
@@ -396,5 +390,20 @@ public class ServerMain
 		{
 			System.out.println(ex.getMessage());
 		}		
+	}
+	private static void enviarArchivos(DataOutputStream out, DataInputStream in)throws IOException{
+		int iter=0;
+		String fname="vacio";
+		while(!(fname.equals("nada"))&&iter<50){
+			fname=in.readUTF();
+			if(fname.equals("nada")||fname.equals("vacio")){
+			}
+			else{
+				enviarArchivo(fname,out);
+				
+			}
+			iter++;
+
+		}
 	}
 }

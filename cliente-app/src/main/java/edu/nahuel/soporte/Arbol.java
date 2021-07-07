@@ -15,6 +15,7 @@ public class Arbol<T>
 	private ArrayList<Arbol<T>> arboles;
 	private ArrayList<Nodo<T>> nodos;
 	private String nombre;
+	
 	public Arbol(String name){
 		arboles=new ArrayList<>();
 		nodos=new ArrayList<>();
@@ -31,12 +32,21 @@ public class Arbol<T>
 	public String getNombre(){
 		return nombre;
 	}
+	public int getArbolesSize(){
+		return arboles.size();
+	}
+	public int getNodosSize(){
+		return nodos.size();
+	}
 	public void reset(){
 		for(Arbol<T> a:arboles){
 			a.reset();
 		}
 		arboles=new ArrayList<>();
 		nodos=new ArrayList<>();
+	}
+	public void addArbol(String name){
+		addArbol(new Arbol<T>(name));
 	}
 	public void addArbol(Arbol<T> a){
 		arboles.add(a);

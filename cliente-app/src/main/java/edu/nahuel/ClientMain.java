@@ -13,10 +13,13 @@ import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
+import java.util.Iterator;
 import inet.ipaddr.*;
+import edu.nahuel.soporte.*;
 public class ClientMain
 {
 	static String FilesPath="Files/";
+	static String XMLPath="xml\\files.xml";
 	public static void main(String[] args)
 	{
 
@@ -87,6 +90,7 @@ public class ClientMain
 		}
 	}
 	public static void downloadFolder(boolean userIp){
+		GestorDirectorio gd = new GestorDirectorio();
 		//El chiste es voy creando paquetitos de 1024 y se lo voy escribiendo al archivo
 		System.out.println("Soy un cliente");
 		String HOST="127.0.0.1";
@@ -110,32 +114,33 @@ public class ClientMain
 			String mensaje=in.readUTF();
 			System.out.println(mensaje);
 			//Hasta aca son los holas
-			//Ver los archivos
-			mensaje=in.readUTF();
-			System.out.println(mensaje);
-			mensaje=in.readUTF();
-			System.out.println(mensaje);
-			// //Escribir el archivo que queremos
-			Scanner scn = new Scanner(System.in);
-			String fid=scn.next();
-			out.writeUTF(fid);
-			//le aviso el archivo o si no existe
-			String fname=in.readUTF();
-			System.out.println(fname);
+
+			
 			//recibiendo
 			mensaje=in.readUTF();
+			System.out.println(mensaje);
+			String fname=XMLPath;
 
 			recibirArchivo(mensaje,fname,in);
 			//ACK del servidor
 			mensaje=in.readUTF();
 			System.out.println(mensaje);
-
+			//Hasta aca el xml
+			Arbol<String> a=gd.leerArbol();
+			crearDirectorios(a);
+			Integer size=new Integer(a.getNodosSize());
+			out.writeUTF(size.toString());
+			//El numero de archivos
+			crearArchivos(a,out,in);
+			//Archivos recibidos
+			System.out.println("Archivos recibidos");
 			sc.close();
 		}
-		catch(IOException ex)
+		catch(Exception  ex)
 		{
 			System.out.println(ex.getMessage());
 		}
+
 	}
 	public static void watchingFiles(boolean userIp){
 		//El chiste es voy creando paquetitos de 1024 y se lo voy escribiendo al archivo
@@ -284,7 +289,7 @@ public class ClientMain
 		int ln=Integer.parseInt(length);
 		System.out.println(mensaje+" "+length+" bytes");
 		byte[] buff; 
-		File f=new File(FilesPath+fname);
+		File f=new File(fname);
 		BufferedOutputStream bos= new BufferedOutputStream(new FileOutputStream(f));
 		//Recibir bytes
 		int recivedbytes=0;
@@ -338,5 +343,23 @@ public class ClientMain
 		{
 			System.out.println(ex.getMessage());
 		}
+	}
+	private static void crearDirectorios(Arbol<String> a){
+		Iterator<Arbol<String>> itArboles=a.arbolIterator();
+		while(itArboles.hasNext()){
+			Arbol<String> dirs= itArboles.next();
+			File f= new File(dirs.getNombre());
+			f.mkdir();
+		}
+	}
+	private static void crearArchivos(Arbol<String> a,DataOutputStream out,DataInputStream in) throws Exception{
+		Iterator<Nodo<String>> itNodos=a.nodosIterator();
+		while(itNodos.hasNext()){
+			Nodo<String> file=itNodos.next();
+			out.writeUTF(file.getValor());
+			recibirArchivo("Enviando",file.getValor(),in);
+			
+		}
+		out.writeUTF("nada");
 	}
 }

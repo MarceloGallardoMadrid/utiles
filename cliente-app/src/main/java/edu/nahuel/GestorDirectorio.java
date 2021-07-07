@@ -14,6 +14,39 @@ public class GestorDirectorio
 	public GestorDirectorio(){
 		
 	}
+	public void crearArbolLinear(String path){
+		Arbol<String> a=leerDirectorio(path);
+		System.out.println("Arbol comun");
+		System.out.println(a.toString(0));
+		System.out.println();
+		ArbolLinearFactory alf = new ArbolLinearFactory();
+		Arbol<String> l=alf.crearArbolLinear(a);
+		System.out.println("Arbol linear");
+		System.out.println(l.toString(0));
+		System.out.println();		
+	}
+	public void imprimirArbolFile(String path){
+		Arbol<String> a=leerDirectorio(path);
+		ArbolLinearFactory alf = new ArbolLinearFactory();
+		Arbol<String> l=alf.crearArbolLinear(a);
+		XMLPrinter xml = new XMLPrinter();
+		xml.escribirArboles(l);
+	}
+	public void showArbol(){
+		XMLPrinter xml = new XMLPrinter();
+		Arbol<String> a=xml.leerArboles();
+		System.out.println("Arbol");
+		System.out.println(a.toString(0));
+		System.out.println();
+	}
+	public Arbol<String> leerArbol(){
+		XMLPrinter xml = new XMLPrinter();
+		Arbol<String> a=xml.leerArboles();
+		return a;
+	}
+	private void showArbol(Arbol<String>  a){
+		System.out.println(a.toString(0));
+	}
 	public void reset(){
 		raiz.reset();
 	}
@@ -54,7 +87,7 @@ public class GestorDirectorio
 				}
 				if(f.isDirectory()){
 					Arbol<String> arbolNuevo=new Arbol<>(f.getName());
-					getFilesNames(arbolNuevo,f.getName());
+					getFilesNames(arbolNuevo,directorio+"\\"+f.getName());
 					arbol.addArbol(arbolNuevo);
 				}
 			}
